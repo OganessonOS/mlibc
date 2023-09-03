@@ -51,4 +51,16 @@ void sys_libc_log(const char* msg){
 	(void)msg;
 }
 
+#ifndef MLIBC_BUILDING_RTDL
+
+void sys_exit(int status){
+	return;
+}
+
+int sys_clock_get(int clock, time_t *secs, long *nanos) {
+	return -ENOSYS;
+}
+
+#endif
+
 }
