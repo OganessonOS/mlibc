@@ -1,8 +1,18 @@
 
+add_project_link_arguments('-Wl,-shared,--hash-style=sysv', language: ['c', 'cpp'])
+
+rtdl_sources += files(
+	'generic/filesystem.cpp',
+	'generic/oganesson.cpp',
+)
+
 libc_sources += files(
 	'generic/entry.cpp',
-	'generic/thread_entry.S',
-	'generic/thread.cpp'
+	'generic/filesystem.cpp',
+	'generic/oganesson.cpp',
+	'generic/asm-x86_64/signals.S',
+	'generic/asm-x86_64/thread_entry.S',
+	'generic/thread.cpp',
 )
 
 if not no_headers
@@ -59,6 +69,14 @@ if not headers_only
 		command: c_compiler.cmd_array() + ['-c', '-o', '@OUTPUT@', '@INPUT@'],
 		input: 'crt-x86_64/crt0.S',
 		output: 'crt0.o',
+		install: true,
+		install_dir: get_option('libdir')
+	)
+	crt_pie = custom_target('Scrt1',
+		build_by_default: true,
+		command: c_compiler.cmd_array() + ['-fPIE', '-c', '-o', '@OUTPUT@', '@INPUT@'],
+		input: 'crt-x86_64/Scrt1.S',
+		output: 'Scrt1.o',
 		install: true,
 		install_dir: get_option('libdir')
 	)
